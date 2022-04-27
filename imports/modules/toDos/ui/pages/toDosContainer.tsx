@@ -12,8 +12,8 @@ export default (props: any) => {
           : props.screenState;
 
   const id =
-      props.match && props.match.params && !!props.match.params.exampleId
-          ? props.match.params.exampleId
+      props.match && props.match.params && !!props.match.params.toDosId
+          ? props.match.params.toDosId
           : props.id;
 
   if (!!screenState && validState.indexOf(screenState) !== -1) {

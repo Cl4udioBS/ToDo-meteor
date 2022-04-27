@@ -6,25 +6,6 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import TextField
   from '/imports/ui/components/SimpleFormFields/TextField/TextField';
-import TextMaskField
-  from '../../../../ui/components/SimpleFormFields/TextMaskField/TextMaskField';
-
-import RadioButtonField
-  from '../../../../ui/components/SimpleFormFields/RadioButtonField/RadioButtonField';
-
-import SelectField
-  from '../../../../ui/components/SimpleFormFields/SelectField/SelectField';
-import UploadFilesCollection
-  from '../../../../ui/components/SimpleFormFields/UploadFiles/uploadFilesCollection';
-
-import ChipInput
-  from '../../../../ui/components/SimpleFormFields/ChipInput/ChipInput';
-import SliderField
-  from '/imports/ui/components/SimpleFormFields/SliderField/SliderField';
-import AudioRecorder
-  from '/imports/ui/components/SimpleFormFields/AudioRecorderField/AudioRecorder';
-import ImageCompactField
-  from '/imports/ui/components/SimpleFormFields/ImageCompactField/ImageCompactField';
 import * as appStyle from '/imports/materialui/styles';
 import Print from '@mui/icons-material/Print';
 import Close from '@mui/icons-material/Close';
@@ -96,71 +77,13 @@ const ToDosDetail = ({
                 name="description"
             />
           </FormGroup>
-          <FormGroup key={'fieldsTwo'}>
-            <SelectField
-                placeholder="Selecione um tipo"
-                name="type"
+          {/* <FormGroup key={'fieldsTwo'}>
+            <CheckBoxField 
+              placeholder='Pessoal'
+              name='personalTask'
             />
-            <SelectField
-                placeholder="Selecione alguns tipos"
-                name="typeMulti"
-            />
-          </FormGroup>
-          <FormGroup key={'fieldsThree'} formType={'subform'} name={'contacts'}>
-            <TextMaskField
-                placeholder="Telefone"
-                name="phone"
-            />
-            <TextMaskField
-                placeholder="CPF"
-                name="cpf"
-            />
-          </FormGroup>
-          <FormGroup key={'fieldsFour'} formType={'subformArray'}
-                     name={'tasks'}>
-            <TextField
-                placeholder="Nome da Tarefa"
-                name="name"
-            />
-            <TextField
-                placeholder="Descrição da Tarefa"
-                name="description"
-            />
-          </FormGroup>
+          </FormGroup> */}
 
-          <SliderField
-              placeholder="Slider"
-              name="slider"
-          />
-
-          <RadioButtonField
-              placeholder="Opções da Tarefa"
-              name="statusRadio"
-              options={[
-                {value: 'valA', label: 'Valor A'},
-                {value: 'valB', label: 'Valor B'},
-                {value: 'valC', label: 'Valor C'},
-
-              ]}
-          />
-
-          <FormGroup key={'fields'}>
-            <AudioRecorder
-                placeholder="Áudio"
-                name="audio"
-            />
-          </FormGroup>
-
-          <UploadFilesCollection
-              name="files"
-              label={'Arquivos'}
-              doc={toDosDoc}/>
-          <FormGroup key={'fieldsFive'} name={'chips'}>
-            <ChipInput
-                name="chip"
-                placeholder="Chip"
-            />
-          </FormGroup>
           <div key={'Buttons'} style={{
             display: 'flex',
             flexDirection: 'row',
