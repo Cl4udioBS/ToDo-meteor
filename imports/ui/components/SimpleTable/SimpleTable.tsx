@@ -15,6 +15,8 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import * as appStyles from '/imports/materialui/styles';
 import {selectRowBackground} from '/imports/materialui/styles';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 import {simpleTableStyle} from './SimpleTableStyle';
 import './simpletableCSS.css';
@@ -232,7 +234,7 @@ const SimpleTable = React.memo(({
                 >{key}</span></div>)}
             </div>);
         } else if (type === 'boolean') {
-            return data ? <CheckIcon style={{width: '15px'}}/> : <CloseIcon style={{width: '15px'}}/>;
+            return data ? <IconButton onClick={ handleChecked}> <CheckCircleOutlineIcon style={{width: '30px'}}/> </IconButton> : <RadioButtonUncheckedIcon style={{width: '30px'}}/>;
         } else if (type === 'html') {
             return Array.isArray(data) ? data.map(d => <div dangerouslySetInnerHTML={{__html: d}}/>) :
                 <div dangerouslySetInnerHTML={{__html: data}}/>;

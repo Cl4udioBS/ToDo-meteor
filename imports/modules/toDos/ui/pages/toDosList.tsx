@@ -109,6 +109,12 @@ const ToDosList = ({
 
   };
 
+  const handleChecked = (doc) => {
+    toDosApi.toggleChecked(doc, ()=>{
+      console.log('Alterou toggle');
+    })
+  }
+
   const callRemove = (doc) => {
     const dialogOptions = {
       icon: <Delete/>,
@@ -143,10 +149,11 @@ const ToDosList = ({
         />
         <SimpleTable
             schema={_.pick(toDosApi.schema,
-                ['image', 'title', 'description'])}
+                [ 'isChecked', 'title', 'description'])}
             data={toDos}
             onClick={onClick}
             actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove}]}
+            // toogleChecked={onClick:  } Houston
         />
         <div style={{
           width: '100%',
