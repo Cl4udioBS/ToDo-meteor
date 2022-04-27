@@ -14,7 +14,7 @@ class ToDosApi extends ApiBase {
       const newFilter = {...filter};
       const newOptions = {
         ...options,
-        projection: {image: 1, title: 1, description: 1, _id: 1},
+        projection: {title: 1, description: 1, _id: 1},
       };
       return this.defaultCollectionPublication(newFilter, newOptions);
     });
