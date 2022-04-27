@@ -1,5 +1,6 @@
 import userprofile from '../userprofile/config';
 import example from './example/config';
+import todo from './toDos/config';
 import pages from '../ui/config/index';
 
 class Modules {
@@ -9,6 +10,7 @@ class Modules {
       ...pages.pagesRouterList,
       ...userprofile.userprofileRouterList,
       ...example.exampleRouterList,
+      ...todo.toDosRouterList,
     ];
 
     // Create modules App Menu Item list
@@ -16,7 +18,7 @@ class Modules {
       ...pages.pagesMenuItemList,
       ...userprofile.userprofileMenuItemList,
       ...example.exampleMenuItemList,
-
+      ...todo.toDosMenuItemList
     ];
   }
 
