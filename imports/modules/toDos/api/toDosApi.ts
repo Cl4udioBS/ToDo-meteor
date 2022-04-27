@@ -36,6 +36,7 @@ class ToDosApi extends ApiBase {
 
   serverToggleCheck = (doc) => {
     const user = getUser();
+    console.log('DOC QUE CHEGEOU',doc)
     if (Meteor.isServer) {
       const task = this.findOne(doc._id);
       if (!task || task.userId !== user._id){

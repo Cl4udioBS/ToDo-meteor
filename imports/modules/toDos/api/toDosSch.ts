@@ -36,7 +36,7 @@ export interface ITask {
   title: string;
   description: string;
   userId: string;
-  check: boolean;
+  isChecked: boolean;
   personalTask: boolean;
   createdat: Date;
   updatedat: Date;

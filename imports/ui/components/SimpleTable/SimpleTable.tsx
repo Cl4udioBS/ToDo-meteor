@@ -17,6 +17,7 @@ import * as appStyles from '/imports/materialui/styles';
 import {selectRowBackground} from '/imports/materialui/styles';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import Checkbox from '@mui/material/Checkbox';
 
 import {simpleTableStyle} from './SimpleTableStyle';
 import './simpletableCSS.css';
@@ -121,6 +122,7 @@ const SimpleTable = React.memo(({
                                     sort,
                                     onSort,
                                     styles,
+                                    handleChange,
 
                                 }: ISimpleTable) => {
     const [filter, setFilter] = React.useState(null);
@@ -191,7 +193,7 @@ const SimpleTable = React.memo(({
         return 'undefined';
     };
 
-    const renderType = (type: string, data: any, colName: string) => {
+    const renderType = (type: string, data: any, colName: string, row: Object) => {
         if (type === 'dom') {
             return data;
         }
@@ -234,7 +236,13 @@ const SimpleTable = React.memo(({
                 >{key}</span></div>)}
             </div>);
         } else if (type === 'boolean') {
-            return data ? <IconButton onClick={ handleChecked}> <CheckCircleOutlineIcon style={{width: '30px'}}/> </IconButton> : <RadioButtonUncheckedIcon style={{width: '30px'}}/>;
+            return <Checkbox 
+                icon={<RadioButtonUncheckedIcon style={{width: '30px'}}/>}
+                checkedIcon={<CheckCircleOutlineIcon style={{width: '30px'}}/>}
+                checked={data}
+                onChange={()=>{handleChange(row)}}
+            />
+
         } else if (type === 'html') {
             return Array.isArray(data) ? data.map(d => <div dangerouslySetInnerHTML={{__html: d}}/>) :
                 <div dangerouslySetInnerHTML={{__html: data}}/>;
@@ -289,7 +297,7 @@ const SimpleTable = React.memo(({
                         flexDirection: col.type === 'dom' ? 'row' : undefined,
                     }}
                 >
-                    {renderType(col.type, row[col.field], col.field)}
+                    {renderType(col.type, row[col.field], col.field,row)}
 
                     {/* }  {renderType(col.type, row[col.field], col.field)}
      { */}

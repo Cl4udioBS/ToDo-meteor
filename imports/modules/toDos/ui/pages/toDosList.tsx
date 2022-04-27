@@ -151,9 +151,10 @@ const ToDosList = ({
             schema={_.pick(toDosApi.schema,
                 [ 'isChecked', 'title', 'description'])}
             data={toDos}
-            onClick={onClick}
-            actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove}]}
-            // toogleChecked={onClick:  } Houston
+            // onClick={onClick}
+            actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove},{icon:<Delete/>, id:'edit', onClick: console.log('editar')}]}
+            // toogleChecked={onClick:  } 
+            handleChange={handleChecked}
         />
         <div style={{
           width: '100%',
