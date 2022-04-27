@@ -10,6 +10,7 @@ import * as appStyle from '/imports/materialui/styles';
 import Print from '@mui/icons-material/Print';
 import Close from '@mui/icons-material/Close';
 import {PageLayout} from '/imports/ui/layouts/pageLayout';
+import {getUser} from '/imports/libs/getUser';
 
 interface IToDosDetail {
   screenState: string;
@@ -148,14 +149,14 @@ export const ToDosDetailContainer = withTracker(
         toDosDoc,
         save: (doc, callback) => toDosApi[screenState === 'create'
             ? 'insert'
-            : 'update'](doc, (e, r) => {
+            : 'update']({...doc, userId: getUser()._id}, (e, r) => {
           if (!e) {
             props.history.push(
                 `/toDos/view/${screenState === 'create' ? r : doc._id}`);
             props.showNotification({
               type: 'success',
               title: 'Operação realizada!',
-              description: `O exemplo foi ${doc._id
+              description: `A tarefa foi ${doc._id
                   ? 'atualizado'
                   : 'cadastrado'} com sucesso!`,
             });
