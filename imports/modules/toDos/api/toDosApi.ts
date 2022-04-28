@@ -15,7 +15,7 @@ class ToDosApi extends ApiBase {
       const newFilter = {...filter};
       const newOptions = {
         ...options,
-        projection: {isChecked:1, title: 1, description: 1, _id: 1},
+        projection: {isChecked:1, title: 1, description: 1,userId:1, _id: 1},
       };
       return this.defaultCollectionPublication(newFilter, newOptions);
     });
@@ -30,19 +30,35 @@ class ToDosApi extends ApiBase {
     this.registerMethod('toggleChecked', this.serverToggleCheck);
   }
 
+  userCheck = (docObj,context) =>{
+      const user = getUser();
+      if (user._id !== docObj.userId){
+        console.log(user._id, '  ',docObj.userId)
+        throw new Meteor.Error("Usuario não é quem criou a tarefa");
+      }
+      else{
+        return (true)
+      }
+  }
+
+  beforeUpdate = (docObj,context) =>{
+    return this.userCheck(docObj,context)
+  }
+  beforeRemove = (docObj,context) =>{
+    return this.userCheck(docObj,context)
+  }
+
   toggleChecked = (doc, callback) => {
     this.callMethod('toggleChecked', doc, callback);
   }
 
   serverToggleCheck = (doc) => {
-    const user = getUser();
-    console.log('DOC QUE CHEGEOU',doc)
     if (Meteor.isServer) {
       const task = this.findOne(doc._id);
-      if (!task || task.userId !== user._id){
+      if (!task){
         throw new Meteor.Error("Erro de tarefa ou id");
       }
-      this.serverUpdate({ _id: doc._id, isChecked: !(task.isChecked)  }, this);
+      this.serverUpdate({ _id: doc._id, isChecked: !(task.isChecked),userId:doc.userId  }, this);
     }  
   }
 

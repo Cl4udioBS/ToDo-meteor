@@ -36,6 +36,31 @@ function createDefautUser() {
       email: 'admin@mrb.com',
       roles: ['Administrador'],
     });
+    
+    createdUserId = Accounts.createUser({
+      username: 'teste',
+      email: 'teste@mrb.com',
+      password: 'teste@mrb.com',
+    });
+    Meteor.users.update(
+        {_id: createdUserId},
+        {
+          $set: {
+            'emails.0.verified': true,
+            profile: {
+              name: 'Admin',
+              email: 'teste@mrb.com',
+            },
+          },
+        },
+    );
+
+    userprofileApi.collectionInstance.insert({
+      _id: createdUserId,
+      username: 'teste',
+      email: 'teste@mrb.com',
+      roles: ['Administrador'],
+    });
     console.log('############## ADMIN CRIADO################');
   }
 }

@@ -19,12 +19,15 @@ import shortid from 'shortid';
 import {PageLayout} from '/imports/ui/layouts/pageLayout';
 import TextField
   from '/imports/ui/components/SimpleFormFields/TextField/TextField';
+import EditIcon from '@mui/icons-material/Edit';
+import {getUser} from '/imports/libs/getUser';
 
 interface IToDosList {
   toDos: object[];
   history: object;
   remove: (doc: object) => void;
   showDialog: (dialog: object) => void;
+  showNotification: (notification: object) => void;
   onSearch: (text?: string) => void;
   total: number;
   loading: boolean;
@@ -59,6 +62,7 @@ const ToDosList = ({
   history,
   remove,
   showDialog,
+  showNotification,
   onSearch,
   total,
   loading,
@@ -71,7 +75,18 @@ const ToDosList = ({
   const classes = useStyles();
 
   const idToDos = shortid.generate();
-  const onClick = (event, id, doc, showDialog) => {
+  const onClick = ( doc) => {
+    let id = doc._id
+    const user = getUser() 
+    if(doc.userId !== user._id){
+      showNotification({
+        type: 'warning',
+        title: 'Operação proibida!',
+        message: `Você não criou esta tarefa`,
+      })
+      return;
+    }
+
     history.push('/toDos/view/' + id);
   };
 
@@ -110,12 +125,27 @@ const ToDosList = ({
   };
 
   const handleChecked = (doc) => {
-    toDosApi.toggleChecked(doc, ()=>{
-      console.log('Alterou toggle');
+    toDosApi.toggleChecked(doc, (e)=>{
+      if(e){
+        showNotification({
+          type: 'warning',
+          title: 'Operação proibida!',
+          message: `Você não criou esta tarefa`,
+        })
+      }
     })
   }
 
   const callRemove = (doc) => {
+    const user = getUser() 
+    if(doc.userId !== user._id){
+      showNotification({
+        type: 'warning',
+        title: 'Operação proibida!',
+        message: `Você não criou esta tarefa`,
+      })
+      return;
+    }
     const dialogOptions = {
       icon: <Delete/>,
       title: 'Remover exemplo',
@@ -149,11 +179,11 @@ const ToDosList = ({
         />
         <SimpleTable
             schema={_.pick(toDosApi.schema,
-                [ 'isChecked', 'title', 'description'])}
+                [ 'isChecked', 'title', 'description','userId'])}
             data={toDos}
             // onClick={onClick}
-            actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove},{icon:<Delete/>, id:'edit', onClick: console.log('editar')}]}
-            // toogleChecked={onClick:  } 
+            actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove},{icon:<EditIcon/>, id:'edit', onClick: onClick}]}
+            // toogleChecked={onClick:  } hee
             handleChange={handleChecked}
         />
         <div style={{
