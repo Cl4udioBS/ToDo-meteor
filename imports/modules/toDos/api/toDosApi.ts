@@ -37,7 +37,7 @@ class ToDosApi extends ApiBase {
         throw new Meteor.Error("Usuario não é quem criou a tarefa");
       }
       else{
-        return (true)
+        return true
       }
   }
 

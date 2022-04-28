@@ -20,7 +20,7 @@ export const pagesRouterList = [
     path: '/',
     exact: true,
     component: Home,
-    isProtected: false,
+    isProtected: true, 
   },
   {
     path: '/signin',
