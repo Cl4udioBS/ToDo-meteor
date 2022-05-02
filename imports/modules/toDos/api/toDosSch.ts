@@ -25,10 +25,16 @@ export const taskSch = {
   },
   userId: {
     type: String,
-    label: 'Autor',
+    label: 'AutorId',
     defaultValue: '',
     optional: false,
-  }
+  },
+  username: {
+    type: String,
+    label: 'Autor',
+    defaultValue: 'default user',
+    optional: false,
+  },
 };
 
 export interface ITask {
@@ -36,6 +42,7 @@ export interface ITask {
   title: string;
   description: string;
   userId: string;
+  username: string;
   isChecked: boolean;
   personalTask: boolean;
   createdat: Date;

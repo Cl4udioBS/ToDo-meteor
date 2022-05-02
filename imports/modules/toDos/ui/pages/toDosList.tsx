@@ -71,10 +71,10 @@ const ToDosList = ({
   searchBy,
   pageProperties,
 }: IToDosList) => {
-
   const classes = useStyles();
 
   const idToDos = shortid.generate();
+  
   const onClick = ( doc) => {
     let id = doc._id
     const user = getUser() 
@@ -168,22 +168,20 @@ const ToDosList = ({
     };
     showDialog(dialogOptions);
   };
-
   return (
       <PageLayout
-          title={'Lista de Exemplos'}
+          title={'Lista de Tarefas'}
           actions={[]}
+          onBack={() => history.push('/')}
       >
         <TextField label={'Pesquisar'} value={text} onChange={change} onKeyPress={keyPress}  placeholder='Digite aqui o que deseja pesquisa...'
                    action={{ icon: 'search',onClick:click }}
         />
         <SimpleTable
             schema={_.pick(toDosApi.schema,
-                [ 'isChecked', 'title', 'description','userId'])}
+                [ 'isChecked', 'title', 'description','username'])}
             data={toDos}
-            // onClick={onClick}
             actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove},{icon:<EditIcon/>, id:'edit', onClick: onClick}]}
-            // toogleChecked={onClick:  } hee
             handleChange={handleChecked}
         />
         <div style={{
@@ -194,11 +192,12 @@ const ToDosList = ({
         }}>
           <TablePagination
               style={{width: 'fit-content', overflow: 'unset'}}
-              rowsPerPageOptions={[10, 25, 50, 100]}
+              rowsPerPageOptions={[4,10, 25, 50, 100]}
               labelRowsPerPage={<div
                   style={{width: 0, padding: 0, margin: 0}}/>}
               component="div"
               count={total}
+              // rowsPerPage={pageProperties.pageSize}
               rowsPerPage={pageProperties.pageSize}
               page={pageProperties.currentPage - 1}
               onPageChange={handleChangePage}
@@ -236,7 +235,7 @@ const ToDosList = ({
 export const subscribeConfig = new ReactiveVar({
   pageProperties: {
     currentPage: 1,
-    pageSize: 25,
+    pageSize: 4,
   },
   sortProperties: {field: 'createdat', sortAscending: true},
   filter: {},
@@ -260,12 +259,12 @@ export const ToDosListContainer = withTracker((props) => {
         config.sortProperties.sortAscending ? 1 : -1,
   };
   toDosSearch.setActualConfig(config);
-
+  user = getUser()
   //Subscribe parameters
   const filter = {
-    ...config.filter,
+    $or:[{personalTask:false},{userId:user._id}]
   };
-
+  
   const limit = config.pageProperties.pageSize;
   const skip = (config.pageProperties.currentPage - 1) *
       config.pageProperties.pageSize;
@@ -276,7 +275,6 @@ export const ToDosListContainer = withTracker((props) => {
   const toDos = subHandle.ready()
       ? toDosApi.find(filter, {sort}).fetch()
       : [];
-
   return ({
     toDos,
     loading: !!subHandle && !subHandle.ready(),

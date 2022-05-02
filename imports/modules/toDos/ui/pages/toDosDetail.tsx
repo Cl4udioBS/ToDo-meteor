@@ -4,6 +4,7 @@ import {toDosApi} from '../../api/toDosApi';
 import SimpleForm from '../../../../ui/components/SimpleForm/SimpleForm';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
+import Switch from '@mui/material/Switch';
 import TextField
   from '/imports/ui/components/SimpleFormFields/TextField/TextField';
 import * as appStyle from '/imports/materialui/styles';
@@ -11,6 +12,8 @@ import Print from '@mui/icons-material/Print';
 import Close from '@mui/icons-material/Close';
 import {PageLayout} from '/imports/ui/layouts/pageLayout';
 import {getUser} from '/imports/libs/getUser';
+
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 interface IToDosDetail {
   screenState: string;
@@ -30,15 +33,29 @@ const ToDosDetail = ({
   history,
 }: IToDosDetail) => {
 
+  const [personalTask,setPersonalTask] = React.useState(toDosDoc ? (toDosDoc.personalTask? toDosDoc.personalTask : false) : false)
+
+  React.useEffect(()=>{
+    if(toDosDoc){
+      setPersonalTask(toDosDoc.personalTask? toDosDoc.personalTask : false)
+    }
+  },[toDosDoc])
+  // let personalTask = toDosDoc.personalTask? toDosDoc.personalTask : false;
+
   const handleSubmit = (doc: object) => {
+    doc.personalTask = personalTask
     save(doc);
   };
+  const handleChange = ()=>{
+    setPersonalTask(!personalTask)
+    // personalTask = !personalTask
+  }
 
   return (
       <PageLayout
           title={screenState === 'view'
-              ? 'Visualizar exemplo'
-              : (screenState === 'edit' ? 'Editar Exemplo' : 'Criar exemplo')}
+              ? 'Visualizar tarefa'
+              : (screenState === 'edit' ? 'Editar tarefa' : 'Criar tarefa')}
           onBack={() => history.push('/toDos')}
           actions={[
             !isPrintView ? (
@@ -77,13 +94,19 @@ const ToDosDetail = ({
                 placeholder="Descrição"
                 name="description"
             />
-          </FormGroup>
-          {/* <FormGroup key={'fieldsTwo'}>
-            <CheckBoxField 
-              placeholder='Pessoal'
-              name='personalTask'
+            <FormControlLabel
+              label={"Pessoal"}
+              control={
+                <Switch 
+                  onChange={handleChange}
+                  checked={personalTask}
+                  name="personal"
+                />
+              }
             />
-          </FormGroup> */}
+
+          </FormGroup>
+
 
           <div key={'Buttons'} style={{
             display: 'flex',
@@ -143,7 +166,6 @@ export const ToDosDetailContainer = withTracker(
       let toDosDoc = id && subHandle.ready()
           ? toDosApi.findOne({_id: id})
           : {};
-
       return ({
         screenState,
         toDosDoc,

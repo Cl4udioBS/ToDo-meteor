@@ -28,7 +28,7 @@ const Home = () => {
 
       <SimpleTable
             schema={_.pick(toDosApi.schema,
-                [ 'isChecked', 'title', 'description','userId'])}
+                [ 'isChecked', 'title', 'description','username'])}
             data={toDos}
         />
 

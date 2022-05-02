@@ -9,19 +9,28 @@ import {getUser} from '/imports/libs/getUser';
 class ToDosApi extends ApiBase {
   constructor(props) {
     super('toDos', taskSch);
-
-    this.addPublication('toDosList', (filter = {}, options = {}) => {
-      const user = getUser();
-      const newFilter = {...filter};
-      const newOptions = {
+    //fix from here
+    this.addTransformedPublication('toDosList',(filter={},options={}) =>{
+      let user = getUser()
+      const uId = user._id
+      let newFilter = {$or:[{personalTask:false},{userId:user._id}]};
+      const newOptions ={
         ...options,
-        projection: {isChecked:1, title: 1, description: 1,userId:1, _id: 1},
-      };
-      return this.defaultCollectionPublication(newFilter, newOptions);
-    });
+      }
+      return this.collectionInstance.find(newFilter,newOptions);
+      },
+      doc => {
+        const userId = doc.userId
+        let user = Meteor.users.find({"_id":userId},).fetch()
+        const username = user[0].username;
+        return{
+          ...doc,
+          username: username? username : ''
+      }
+    })
+  
 
     this.addPublication('toDosDetail', (filter = {}, options = {}) => {
-      const user = getUser();
       const newFilter = {...filter};
       const newOptions = {...options};
       return this.defaultCollectionPublication(newFilter, newOptions);
@@ -33,7 +42,6 @@ class ToDosApi extends ApiBase {
   userCheck = (docObj,context) =>{
       const user = getUser();
       if (user._id !== docObj.userId){
-        console.log(user._id, '  ',docObj.userId)
         throw new Meteor.Error("Usuario não é quem criou a tarefa");
       }
       else{
