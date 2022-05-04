@@ -1,6 +1,6 @@
 // @ts-ignore
 import React from 'react';
-import Home from '../pages/Home/Home';
+import homeContainer from '../pages/Home/Home';
 import Signin from '../pages/SignIn/Signin';
 import Signup from '../pages/SignUp/Signup';
 import Signout from '../pages/SignOut/Signout';
@@ -19,7 +19,8 @@ export const pagesRouterList = [
   {
     path: '/',
     exact: true,
-    component: Home,
+    component: homeContainer,
+    //tracker de home
     isProtected: true, 
   },
   {

@@ -1,4 +1,6 @@
 import React from 'react';
+import {useState} from 'react'
+
 import {withTracker} from 'meteor/react-meteor-data';
 import {toDosApi} from '../../api/toDosApi';
 import SimpleTable from '/imports/ui/components/SimpleTable/SimpleTable';
@@ -21,6 +23,10 @@ import TextField
   from '/imports/ui/components/SimpleFormFields/TextField/TextField';
 import EditIcon from '@mui/icons-material/Edit';
 import {getUser} from '/imports/libs/getUser';
+
+import Modal from '@mui/material/Modal';
+
+import {ToDosDetailContainer} from './toDosDetail'
 
 interface IToDosList {
   toDos: object[];
@@ -74,7 +80,11 @@ const ToDosList = ({
   const classes = useStyles();
 
   const idToDos = shortid.generate();
-  
+
+  const [open,setOpen] = useState(false);
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
   const onClick = ( doc) => {
     let id = doc._id
     const user = getUser() 
@@ -86,6 +96,8 @@ const ToDosList = ({
       })
       return;
     }
+
+    // HERE
 
     history.push('/toDos/view/' + id);
   };
@@ -125,6 +137,7 @@ const ToDosList = ({
   };
 
   const handleChecked = (doc) => {
+
     toDosApi.toggleChecked(doc, (e)=>{
       if(e){
         showNotification({
@@ -221,10 +234,20 @@ const ToDosList = ({
         <div style={appStyle.fabContainer}>
           <Fab
               id={'add'}
-              onClick={() => history.push(`/toDos/create/${idToDos}`)}
+              // onClick={() => history.push(`/toDos/create/${idToDos}`)}
+              onClick={handleOpen}
               color={'primary'}>
-            <Add/>
+            {/* HERE */}
+              <Add/>
           </Fab>
+          {/* <Modal
+            open={open}
+            onClose={handleClose}
+          >
+            <ToDosDetailContainer 
+            
+            />
+          </Modal> */}
         </div>
 
       </PageLayout>
@@ -237,7 +260,7 @@ export const subscribeConfig = new ReactiveVar({
     currentPage: 1,
     pageSize: 4,
   },
-  sortProperties: {field: 'createdat', sortAscending: true},
+  sortProperties: {field: 'createdat', sortAscending: false},
   filter: {},
   searchBy: null,
 });
