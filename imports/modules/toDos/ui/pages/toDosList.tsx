@@ -1,5 +1,4 @@
 import React from 'react';
-import {useState} from 'react'
 
 import {withTracker} from 'meteor/react-meteor-data';
 import {toDosApi} from '../../api/toDosApi';
@@ -24,9 +23,6 @@ import TextField
 import EditIcon from '@mui/icons-material/Edit';
 import {getUser} from '/imports/libs/getUser';
 
-import Modal from '@mui/material/Modal';
-
-import {ToDosDetailContainer} from './toDosDetail'
 
 interface IToDosList {
   toDos: object[];
@@ -70,6 +66,7 @@ const ToDosList = ({
   showDialog,
   showNotification,
   onSearch,
+  showDrawer,
   total,
   loading,
   setPage,
@@ -77,13 +74,18 @@ const ToDosList = ({
   searchBy,
   pageProperties,
 }: IToDosList) => {
+
   const classes = useStyles();
-
   const idToDos = shortid.generate();
+  const handleOpen = (page) => {
+    let goToPage = page;
+    if (typeof goToPage != 'string'){
+      goToPage = `/toDos/create/${idToDos}`
+    }
 
-  const [open,setOpen] = useState(false);
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+    const url = goToPage;
+    showDrawer({title: 'Tareifa', url:url});
+  }
 
   const onClick = ( doc) => {
     let id = doc._id
@@ -98,8 +100,8 @@ const ToDosList = ({
     }
 
     // HERE
-
-    history.push('/toDos/view/' + id);
+    handleOpen('/toDos/view/' + id)
+    // history.push('/toDos/view/' + id);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -197,6 +199,43 @@ const ToDosList = ({
             actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove},{icon:<EditIcon/>, id:'edit', onClick: onClick}]}
             handleChange={handleChecked}
         />
+
+
+
+        {/*     
+<Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={open}
+                  onClose={handleClose}
+              >
+                {!user || !user._id ? (
+                    [
+                      <MenuItem key={'signin'}
+                                onClick={openPage('/signin')}>Entrar</MenuItem>]
+                ) : (
+                    [
+                      <MenuItem
+                          key={'userprofile'}
+                          onClick={viewProfile}
+                      >{user.username || 'Editar'}</MenuItem>,
+                      <MenuItem key={'signout'}
+                                onClick={openPage('/signout')}><ExitToAppIcon
+                          fontSize="small"
+                      /> Sair</MenuItem>]
+                )}
+              </Menu>
+
+        */}
         <div style={{
           width: '100%',
           display: 'flex',
@@ -210,7 +249,6 @@ const ToDosList = ({
                   style={{width: 0, padding: 0, margin: 0}}/>}
               component="div"
               count={total}
-              // rowsPerPage={pageProperties.pageSize}
               rowsPerPage={pageProperties.pageSize}
               page={pageProperties.currentPage - 1}
               onPageChange={handleChangePage}
@@ -234,20 +272,10 @@ const ToDosList = ({
         <div style={appStyle.fabContainer}>
           <Fab
               id={'add'}
-              // onClick={() => history.push(`/toDos/create/${idToDos}`)}
               onClick={handleOpen}
               color={'primary'}>
-            {/* HERE */}
               <Add/>
           </Fab>
-          {/* <Modal
-            open={open}
-            onClose={handleClose}
-          >
-            <ToDosDetailContainer 
-            
-            />
-          </Modal> */}
         </div>
 
       </PageLayout>

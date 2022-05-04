@@ -204,6 +204,7 @@ const DrawerContainer = (options = {
                     isLoggedIn={isLoggedIn}
                     userLoading={userLoading}
                     theme={theme}
+                    isDrawer={true}
                 />
               </MemoryRouter>
           ) : null}

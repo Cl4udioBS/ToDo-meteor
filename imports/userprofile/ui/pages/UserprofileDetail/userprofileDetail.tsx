@@ -32,7 +32,7 @@ const UserProfileDetail = ({
           title={screenState === 'view'
               ? 'Visualizar usuário'
               : (screenState === 'edit' ? 'Editar Usuário' : 'Criar usuário')}
-          onBack={() => history.push('/example')}
+          onBack={() => history.push('/userprofile')}
           hiddenTitleBar={!!hiddenTitleBar}
       >
         <SimpleForm

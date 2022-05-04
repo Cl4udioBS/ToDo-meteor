@@ -12,6 +12,7 @@ export const PageLayout = ({
   hiddenTitleBar,
   history,
   onBack,
+  isDrawer,
 }) => (
     <div
         style={{
@@ -50,7 +51,7 @@ export const PageLayout = ({
             alignItems: 'center',
           }}>
 
-            {(onBack || history) && <Button
+            {((onBack || history) && !isDrawer) && <Button
                 onClick={() => {
                   if (onBack) {
                     onBack();

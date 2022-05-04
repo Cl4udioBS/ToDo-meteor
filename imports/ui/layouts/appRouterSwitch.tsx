@@ -6,7 +6,6 @@ import NotFound from '../pages/NotFound/NotFound';
 
   function AppRouterSwitch(props) {
   let location = useLocation();
-
     return (
             <Switch location={location}>
               {
@@ -17,13 +16,17 @@ import NotFound from '../pages/NotFound/NotFound';
                                                exact={!!routerData.exact}
                                                path={routerData.path}
                                                generalProps={props}
-                                               component={routerData.component}/>;
+                                               component={routerData.component}
+                                               isDrawer={props.isDrawer}
+                                               />;
                       } else {
                         return <PublicRoute key={routerData.path}
                                             exact={!!routerData.exact}
                                             path={routerData.path}
                                             generalProps={props}
-                                            component={routerData.component}/>;
+                                            component={routerData.component}
+                                            isDrawer={props.isDrawer}
+                                            />;
                       }
 
                     })
@@ -57,8 +60,9 @@ const ProtectedRoute = ({component: Component, generalProps, ...rest}) => (
         {...rest}
         render={(props) => {
           const isLogged = generalProps.isLoggedIn;
+          // console.log("in protected",props, " general",generalProps)
           return isLogged ? (
-              <Component {...props} {...generalProps} />
+              <Component {...props} {...generalProps}/>
           ) : (
               <Redirect
                   to={{

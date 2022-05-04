@@ -22,6 +22,7 @@ interface IToDosDetail {
   toDosDoc: object;
   save: { (doc: object, callback?: {}): void };
   history: { push(url: string): void };
+  isDrawer: boolean;
 }
 
 const ToDosDetail = ({
@@ -30,11 +31,12 @@ const ToDosDetail = ({
   loading,
   toDosDoc,
   save,
+  closeDrawer,
   history,
+  isDrawer,
 }: IToDosDetail) => {
 
   const [personalTask,setPersonalTask] = React.useState(toDosDoc ? (toDosDoc.personalTask? toDosDoc.personalTask : false) : false)
-
   React.useEffect(()=>{
     if(toDosDoc){
       setPersonalTask(toDosDoc.personalTask? toDosDoc.personalTask : false)
@@ -50,13 +52,14 @@ const ToDosDetail = ({
     setPersonalTask(!personalTask)
     // personalTask = !personalTask
   }
-
+  
   return (
       <PageLayout
           title={screenState === 'view'
               ? 'Visualizar tarefa'
               : (screenState === 'edit' ? 'Editar tarefa' : 'Criar tarefa')}
           onBack={() => history.push('/toDos')}
+          isDrawer={isDrawer}
           actions={[
             !isPrintView ? (
                 <span style={{
@@ -119,11 +122,13 @@ const ToDosDetail = ({
                 <Button
                     key={'b1'}
                     style={{marginRight: 10}}
-                    onClick={screenState === 'edit' ? () => history.push(
-                        `/toDos/view/${toDosDoc._id}`) : () => history.push(
-                        `/toDos/list`)}
+                    // onClick={screenState === 'edit' ? () => history.push(
+                    //     `/toDos/view/${toDosDoc._id}`) : () => history.push(
+                    //     `/toDos/list`)}
+                    onClick={closeDrawer}
                     color={'secondary'} variant="contained">
                   {screenState === 'view' ? 'Voltar' : 'Cancelar'}
+                  {/* change cancelar here */}
                 </Button>
             ) : null}
 

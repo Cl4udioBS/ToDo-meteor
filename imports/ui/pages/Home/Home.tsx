@@ -11,9 +11,11 @@ import Button from '@mui/material/Button';
 import {withTracker} from 'meteor/react-meteor-data';
 import {Link} from 'react-router-dom';
 import {initSearch} from '../../../libs/searchUtils';
+import Box from '@mui/material/Box'
+import { padding } from '@mui/system';
+import { AlignHorizontalLeft } from '@mui/icons-material';
+import { ISxStyleObject } from "/imports/types/ISxStyleObject";
 
-
-//FAZER o tracker
 
 
 interface IHome {
@@ -42,7 +44,7 @@ const Home = ({
     }
 
      return(
-    <>
+    <Box>
       <Container>
         <h1>Olá, {user.username }</h1>
         <p>Atividades recentes.</p>
@@ -55,14 +57,16 @@ const Home = ({
             handleChange={handleChecked}
 
         />
-      <Button 
-          variant={'contained'}
-          component={Link}
-          to="/toDos"
-      >
-        Minhas tarefas
-      </Button>
-    </>
+      <Box >
+        <Button 
+            variant={'contained'}
+            component={Link}
+            to="/toDos"
+            >
+          Minhas tarefas
+        </Button>
+      </Box>
+    </Box>
      )
 };
 
