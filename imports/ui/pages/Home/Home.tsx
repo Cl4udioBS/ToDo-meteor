@@ -12,11 +12,17 @@ import {withTracker} from 'meteor/react-meteor-data';
 import {Link} from 'react-router-dom';
 import {initSearch} from '../../../libs/searchUtils';
 import Box from '@mui/material/Box'
+import Card from '@mui/material/Card';
+import  Typography  from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+
 import { padding } from '@mui/system';
 import { AlignHorizontalLeft } from '@mui/icons-material';
 import { ISxStyleObject } from "/imports/types/ISxStyleObject";
-
-
+import {homeStyles} from './HomeStyle'
+import Itask from 'imports/modules/toDos/api/toDosSch'
 
 interface IHome {
   toDos: object[];
@@ -30,6 +36,12 @@ const Home = ({
 
 }: IHome) => {
      const user = getUser();
+
+     const [data,setData] = React.useState(toDos)
+
+     React.useEffect(()=>{
+       setData(toDos)
+     },[toDos])
 
      const handleChecked = (doc) => {
       toDosApi.toggleChecked(doc, (e)=>{
@@ -50,13 +62,61 @@ const Home = ({
         <p>Atividades recentes.</p>
       </Container>
 
-      <SimpleTable
+      {/* <SimpleTable
             schema={_.pick(toDosApi.schema,
                 [ 'isChecked', 'title', 'description','username'])}
             data={toDos}
             handleChange={handleChecked}
 
-        />
+        /> */}
+      <Card key={'taskListHeader'}>
+          <Box sx={homeStyles.insideCard}>
+            <Box sx={homeStyles.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}} >
+                Concluida
+              </Typography>
+            </Box>
+            <Box sx={homeStyles.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}}>
+                Titulo
+              </Typography>
+            </Box>
+            <Box sx={homeStyles.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}}>
+                Descrição
+              </Typography>
+            </Box>
+            <Box sx={homeStyles.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}}>
+                Autor
+              </Typography>
+            </Box>
+              
+
+          </Box>
+              {
+                data.map((task:Itask)=>{
+                  return(
+                    <Card key={'taskListHeader'}>
+                      <Box sx={homeStyles.task}>
+                      <Checkbox 
+                          icon={<RadioButtonUncheckedIcon style={{width: '30px'}}/>}
+                          checkedIcon={<CheckCircleOutlineIcon style={{width: '30px'}}/>}
+                          checked={task.isChecked}
+                          onChange={()=>{handleChecked(task)}}
+                          sx={homeStyles.taskItem}
+                      />
+                      <Typography variant='subtitle1' sx={homeStyles.taskItem} >{task.title}</Typography>
+                      <Typography variant='subtitle1' sx={homeStyles.taskItem} >{task.description}</Typography>
+                      <Typography variant='subtitle1' sx={homeStyles.taskItem} >{task.username}</Typography>       
+                      </Box>
+                    </Card>                  )
+                })
+              }
+        </Card>
+
+
+
       <Box >
         <Button 
             variant={'contained'}

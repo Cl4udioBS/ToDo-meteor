@@ -2,7 +2,7 @@ import React from 'react';
 
 import {withTracker} from 'meteor/react-meteor-data';
 import {toDosApi} from '../../api/toDosApi';
-import SimpleTable from '/imports/ui/components/SimpleTable/SimpleTable';
+// import SimpleTable from '/imports/ui/components/SimpleTable/SimpleTable';
 import _ from 'lodash';
 
 import Add from '@mui/icons-material/Add';
@@ -20,9 +20,15 @@ import shortid from 'shortid';
 import {PageLayout} from '/imports/ui/layouts/pageLayout';
 import TextField
   from '/imports/ui/components/SimpleFormFields/TextField/TextField';
-import EditIcon from '@mui/icons-material/Edit';
 import {getUser} from '/imports/libs/getUser';
+import Card from '@mui/material/Card';
+import Box from '@mui/material/Box'
+import Itask from 'imports/modules/toDos/api/toDosSch'
+import  Typography  from '@mui/material/Typography';
 
+import {toDosStyle} from './toDosListStyle'
+
+import MyCard from '/imports/ui/components/MyCard/MyCard';
 
 interface IToDosList {
   toDos: object[];
@@ -31,6 +37,7 @@ interface IToDosList {
   showDialog: (dialog: object) => void;
   showNotification: (notification: object) => void;
   onSearch: (text?: string) => void;
+  showDrawer: (drawer:object) => void;
   total: number;
   loading: boolean;
   setPage: (page: number) => void;
@@ -68,7 +75,7 @@ const ToDosList = ({
   onSearch,
   showDrawer,
   total,
-  loading,
+  // loading,
   setPage,
   setPageSize,
   searchBy,
@@ -77,7 +84,23 @@ const ToDosList = ({
 
   const classes = useStyles();
   const idToDos = shortid.generate();
-  const handleOpen = (page) => {
+
+  const [data,setData] = React.useState(toDos)
+
+  React.useEffect(()=>{
+    setData(toDos)
+  },[toDos])
+
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  // const open = Boolean(anchorEl);//transformar open em array, e integrar com anchoras
+  let open :boolean;
+
+
+
+
+
+  const handleOpen = (page:string) => {
     let goToPage = page;
     if (typeof goToPage != 'string'){
       goToPage = `/toDos/create/${idToDos}`
@@ -87,7 +110,8 @@ const ToDosList = ({
     showDrawer({title: 'Tareifa', url:url});
   }
 
-  const onClick = ( doc) => {
+  const onClickEdit = ( doc) => {
+    handleClose()
     let id = doc._id
     const user = getUser() 
     if(doc.userId !== user._id){
@@ -104,7 +128,7 @@ const ToDosList = ({
     // history.push('/toDos/view/' + id);
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement>, newPage:number) => {
     setPage(newPage + 1);
   };
 
@@ -152,6 +176,7 @@ const ToDosList = ({
   }
 
   const callRemove = (doc) => {
+    handleClose()
     const user = getUser() 
     if(doc.userId !== user._id){
       showNotification({
@@ -192,50 +217,40 @@ const ToDosList = ({
         <TextField label={'Pesquisar'} value={text} onChange={change} onKeyPress={keyPress}  placeholder='Digite aqui o que deseja pesquisa...'
                    action={{ icon: 'search',onClick:click }}
         />
-        <SimpleTable
-            schema={_.pick(toDosApi.schema,
-                [ 'isChecked', 'title', 'description','username'])}
-            data={toDos}
-            actions={[{icon: <Delete/>, id: 'delete', onClick: callRemove},{icon:<EditIcon/>, id:'edit', onClick: onClick}]}
-            handleChange={handleChecked}
-        />
+        <Card key={'taskListHeader'}>
+          <Box sx={toDosStyle.insideCard}>
+            <Box sx={toDosStyle.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}} >
+                Concluidaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+              </Typography>
+            </Box>
+            <Box sx={toDosStyle.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}}>
+                Titulo
+              </Typography>
+            </Box>
+            <Box sx={toDosStyle.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}}>
+                Descrição
+              </Typography>
+            </Box>
+            <Box sx={toDosStyle.titleSection}>
+              <Typography variant='subtitle1' sx={{fontWeight:'bold'}}>
+                Autor
+              </Typography>
+            </Box>
+              
 
+          </Box>
+              {
+                data.map((task:Itask,index:number)=>{
+                  return(
+                    <MyCard task={task} index={index} remove={remove} showNotification={showNotification} showDrawer={showDrawer} showDialog={showDialog} />
+                  )
+                })
+              }
+        </Card>
 
-
-        {/*     
-<Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={open}
-                  onClose={handleClose}
-              >
-                {!user || !user._id ? (
-                    [
-                      <MenuItem key={'signin'}
-                                onClick={openPage('/signin')}>Entrar</MenuItem>]
-                ) : (
-                    [
-                      <MenuItem
-                          key={'userprofile'}
-                          onClick={viewProfile}
-                      >{user.username || 'Editar'}</MenuItem>,
-                      <MenuItem key={'signout'}
-                                onClick={openPage('/signout')}><ExitToAppIcon
-                          fontSize="small"
-                      /> Sair</MenuItem>]
-                )}
-              </Menu>
-
-        */}
         <div style={{
           width: '100%',
           display: 'flex',

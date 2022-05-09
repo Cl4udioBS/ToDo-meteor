@@ -12,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import AppRouterSwitch from './layouts/appRouterSwitch';
 import {isMobile} from '/imports/libs/deviceVerify';
-import {makeStyles, useTheme} from '@mui/styles';
+import {useTheme} from '@mui/styles';
 import {MemoryRouter} from 'react-router';
 import {useAccount} from '/imports/libs/userAccount';
 import * as appStyles from "/imports/materialui/styles";
@@ -31,7 +31,7 @@ let notifier = new AWN({position:'bottom-left',maxNotifications:1});
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-function Alert(props) {
+function Alert(props:IGeneralComponents) {
 
   const severityStyle = {
     transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
@@ -57,23 +57,29 @@ function Alert(props) {
     severityStyle.backgroundColor = 'rgb(237, 247, 237)';
     severityStyle.color =  'rgb(30, 70, 32)';
   }
-
+  console.log('chiled',typeof props.children)
   return <div style={severityStyle}>
     {props.children}
   </div>
 }
 
-const DialogContainer = (options = {
+interface IDialogContainer extends IGeneralComponents {
+  content: (la:IGeneralComponents) => JSX.Element;
+  action: (le:IGeneralComponents) => JSX.Element[]  ;
+}
+
+const DialogContainer = (options:IDialogContainer  = {
   open: false,
   onClose: () => {
   },
   onOpen: () => {
   },
+  content: ()=> <></>,
+  action: () => [<></>],
 }) => (
     <Dialog
         aria-labelledby="Modal"
         onClose={options.onClose}
-        onOpen={options.onOpen}
         onOpen={options.onOpen}
         open={options.open}
     >
@@ -138,7 +144,7 @@ const DialogContainer = (options = {
     </Dialog>
 );
 
-const DrawerContainer = (options = {
+const DrawerContainer = (options:IGeneralComponents = {
   open: false,
   onClose: () => {
   },
@@ -217,7 +223,7 @@ const DrawerContainer = (options = {
 };
 
 
-const WindowContainer = (options = {
+const WindowContainer = (options:IGeneralComponents = {
   open: false,
   onClose: () => {
   },
@@ -226,7 +232,6 @@ const WindowContainer = (options = {
 }) => {
   const theme = useTheme();
   const {isLoggedIn, user, userLoading} = useAccount();
-
   const Component = options.component;
   const url = options.url;
   return (
@@ -303,7 +308,7 @@ const WindowContainer = (options = {
   );
 };
 
-const SnackBarContainer = (options = {
+const SnackBarContainer = (options:IGeneralComponents = {
   open: false,
   onClose: () => {
   },
@@ -337,6 +342,23 @@ const SnackBarContainer = (options = {
     />
 );
 
+
+interface IGeneralComponents {
+  open: boolean;
+  url?: string;
+  title?: string;
+  type?: string;
+  anchor?: "bottom" | "left" | "right" | "top" | undefined ;
+  severity?: string;
+  description?: string;
+  component?: typeof React.Component;
+  children?: typeof React.Children;
+  onClose: () => void;
+  onOpen: () => void;
+  actions?: () => void;
+}
+
+
 class GeneralComponents extends React.Component {
   constructor(props) {
     super(props);
@@ -354,7 +376,7 @@ class GeneralComponents extends React.Component {
     });
   }
 
-  showNotification = (options = {}) => {
+  showNotification = (options:{type:string,title:string,description:string}) => {
 
     const notificationOptions = {
       labels:{
@@ -370,7 +392,6 @@ class GeneralComponents extends React.Component {
     };
 
     notifier[options.type](options.description,notificationOptions);
-
   }
 
   showDialog = (options = {}) => {
